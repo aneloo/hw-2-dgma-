@@ -1,0 +1,682 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{geometry}
+\geometry{top=2cm,bottom=2cm,left=2.5cm,right=2cm}
+
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{patterns}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+\begin{document}
+\thispagestyle{empty}
+
+% --- Шапка университета ---
+\begin{center}
+{\small
+Министерство науки и высшего образования\\
+Российской Федерации\\
+ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ АВТОНОМНОЕ\\
+ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ ВЫСШЕГО ОБРАЗОВАНИЯ\\
+«Национальный исследовательский университет ИТМО»\\[0.3cm]
+Мегафакультет компьютерных технологий и управления
+}
+\end{center}
+
+\vspace{3cm}
+
+% --- Название работы ---
+\begin{center}
+{\Large \textbf{Домашняя работа №2}}\\[0.4cm]
+{\large по дисциплине}\\[0.2cm]
+{\Large \textbf{«Дополнительные главы математического анализа»}}\\[0.2cm]
+
+\end{center}
+
+\vspace{3cm}
+
+% --- Кто выполнил / кто проверил ---
+\vspace{3cm}
+
+\begin{flushright}
+Выполнила:\\[0.2cm]
+Вольнова Анна Александровна\\[0.1cm]
+группа P3219\\[0.8cm]
+Проверила:\\[0.2cm]
+Блейхер Оксана Владимировна
+
+\end{flushright}
+
+\vfill
+
+\begin{center}
+Санкт-Петербург, 2025
+\end{center}
+
+
+\newpage
+\textbf{411--420.} Вычислить двойной интеграл по области \(D\), ограниченной указанными линиями.
+
+\medskip
+\textbf{419.}\ \(\displaystyle \iint\limits_D (x-4y^3)\,dx\,dy;\qquad
+D:\ y=x^3,\ y=0,\ x=1.\)
+
+
+\medskip
+\textbf{Решение.}
+Область \(D\) ограничена кривой \(y=x^3\), осью \(Ox\) (то есть \(y=0\))
+и прямой \(x=1\). Следовательно,
+\[
+0\le x\le 1,\qquad 0\le y\le x^3.
+\]
+
+\begin{flalign*}
+\iint\limits_D (x-4y^3)\,dx\,dy
+= \int_{0}^{1}\!\!\int_{0}^{x^3}(x-4y^3)\,dy\,dx = \int_{0}^{1}\bigl(xy-y^4\bigr)\Big|_{y=0}^{\,y=x^3}\,dx 
+= \int_{0}^{1}\left(x\cdot x^3-(x^3)^4\right)\,dx=
+\end{flalign*}
+\begin{flalign*}
+= \int_{0}^{1}(x^4-x^{12})\,dx = \left(\frac{x^5}{5}-\frac{x^{13}}{13}\right)\Bigg|_{0}^{1} 
+&= \frac15-\frac1{13}=\frac{8}{65}. &&
+\end{flalign*}
+
+
+
+
+% ---------- Рисунок области D ----------
+% В ПРЕАМБУЛЕ нужно:
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.18}
+% \usepgfplotslibrary{fillbetween}
+% \usetikzlibrary{patterns}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines=middle,
+    xmin=-0.1, xmax=1.25,
+    ymin=-0.1, ymax=1.15,
+    xtick={0,1},
+    ytick={0,1},
+    xlabel={$x$},
+    ylabel={$y$},
+    samples=200,
+    width=9cm, height=6.5cm,
+    clip=false
+]
+% Границы области на [0,1]
+\addplot[name path=curve, domain=0:1, thick] {x^3}; % y = x^3
+\addplot[name path=base,  domain=0:1] {0};          % y = 0
+
+% Штриховка области между y=0 и y=x^3
+\addplot[
+    pattern=north east lines,
+    pattern color=black
+] fill between[of=curve and base];
+
+% Вертикальная граница x=1
+\addplot[thick] coordinates {(1,0) (1,1)};
+
+% Подписи
+\node at (axis cs:0.62,0.35) {$D$};
+\node at (axis cs:0.78,0.95) {$y=x^3$};
+\node at (axis cs:1.08,0.55) {$x=1$};
+\node at (axis cs:0.65,-0.07) {$y=0$};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Область интегрирования \(D\) (задача 419)}
+\end{figure}
+
+\medskip
+\textbf{Ответ:}\ \(\displaystyle \frac{8}{65}.\)
+
+
+\newpage
+\medskip
+\textbf{421--430.} Вычислить объём тела, ограниченного заданными поверхностями.
+Сделать чертежи данного тела и его проекции на плоскость \(xOy\).
+
+\textbf{429.}\ \(z=3x+2y,\quad y=\sqrt{9-x^2},\quad z=0,\quad y=0,\quad x=0.\)
+
+\medskip
+\textbf{Решение.}
+По заданным поверхностям построим область \(V\) и её проекцию на плоскость \(xOy\).
+Объём тела находим по формуле
+\[
+V=\iiint\limits_{(V)} dx\,dy\,dz.
+\]
+
+Тело ограничено снизу плоскостью \(z=0\), сверху плоскостью \(z=3x+2y\),
+а по бокам плоскостями \(x=0\), \(y=0\) и цилиндром \(x^2+y^2=9\)
+(так как \(y=\sqrt{9-x^2}\iff x^2+y^2=9,\ y\ge 0\)).
+Следовательно, проекция на \(xOy\) — четверть круга радиуса \(3\) в I четверти:
+\[
+D=\{(x,y):\ x\ge 0,\ y\ge 0,\ x^2+y^2\le 9\}.
+\]
+
+Перейдём к полярным координатам:
+\[
+x=\rho\cos\varphi,\qquad y=\rho\sin\varphi,\qquad dx\,dy\,dz=\rho\,d\rho\,d\varphi\,dz.
+\]
+Тогда пределы изменения:
+\[
+0\le \varphi\le \frac{\pi}{2},\qquad 0\le \rho\le 3,\qquad 0\le z\le 3x+2y
+= \rho(3\cos\varphi+2\sin\varphi).
+\]
+
+\begin{flalign*}
+V
+&= \iiint\limits_{(V)} dx\,dy\,dz
+= \int_{0}^{\pi/2}\!\!\int_{0}^{3}\!\!\int_{0}^{\rho(3\cos\varphi+2\sin\varphi)}
+\rho\,dz\,d\rho\,d\varphi = \int_{0}^{\pi/2}\!\!\int_{0}^{3} \rho\Bigl[z\Bigr]_{0}^{\rho(3\cos\varphi+2\sin\varphi)}\,d\rho\,d\varphi &&\\[2mm]
+&= \int_{0}^{\pi/2}\!\!\int_{0}^{3} \rho^2(3\cos\varphi+2\sin\varphi)\,d\rho\,d\varphi
+= \int_{0}^{\pi/2}(3\cos\varphi+2\sin\varphi)\,d\varphi\ \cdot\
+\int_{0}^{3}\rho^2\,d\rho &&\\
+&= \Bigl[3\sin\varphi-2\cos\varphi\Bigr]_{0}^{\pi/2}\cdot
+\Bigl[\frac{\rho^3}{3}\Bigr]_{0}^{3} 
+= (3-(-2))\cdot 9 = 45. &&
+\end{flalign*}
+
+\medskip
+\textbf{Ответ}: 45.
+
+\newpage
+
+\textbf{431--440.} Задан криволинейный интеграл
+\[
+\int\limits_{L} P(x,y)\,dx + Q(x,y)\,dy
+\]
+и точки \(O(0;0),\ A(4;0),\ B(0;8),\ C(4;8)\).
+Вычислить интеграл, если:
+\begin{enumerate}
+\item[a)] \(L\) — ломаная \(OAC\);
+\item[b)] \(L\) — ломаная \(OBC\);
+\item[c)] \(L\) — дуга параболы \(y=\dfrac{x^2}{2}\).
+\end{enumerate}
+Объяснить совпадение полученных результатов.
+
+\medskip
+\textbf{439.}\ \(\displaystyle \int\limits_{L} (3x^2-y)\,dx-(x+2y)\,dy.\)
+
+\medskip
+\textbf{Решение.}
+\[
+P(x,y)=3x^2-y,\qquad Q(x,y)=-(x+2y).
+\]
+
+\medskip
+a) \(L\) — ломаная \(OAC\).
+По свойству аддитивности криволинейного интеграла
+\[
+\int\limits_{OAC} P\,dx+Q\,dy
+=\int\limits_{OA} P\,dx+Q\,dy+\int\limits_{AC} P\,dx+Q\,dy.
+\]
+
+На отрезке \(OA:\ y=0,\ dy=0,\ 0\le x\le 4\). Поэтому
+\[
+\int\limits_{OA}(3x^2-y)\,dx-(x+2y)\,dy
+=\int_{0}^{4}3x^2\,dx
+=\bigl(x^3\bigr)_{0}^{4}=64.
+\]
+
+На отрезке \(AC:\ x=4,\ dx=0,\ 0\le y\le 8\). Поэтому
+\[
+\int\limits_{AC}(3x^2-y)\,dx-(x+2y)\,dy
+=\int_{0}^{8}-(4+2y)\,dy
+=-(4y+y^2)_{0}^{8}=-96.
+\]
+
+Следовательно,
+\[
+\int\limits_{OAC}(3x^2-y)\,dx-(x+2y)\,dy=64-96=-32.
+\]
+
+\medskip
+b) \(L\) — ломаная \(OBC\).
+Аналогично, по свойству аддитивности
+\[
+\int\limits_{OBC} P\,dx+Q\,dy
+=\int\limits_{OB} P\,dx+Q\,dy+\int\limits_{BC} P\,dx+Q\,dy.
+\]
+
+На отрезке \(OB:\ x=0,\ dx=0,\ 0\le y\le 8\). Поэтому
+\[
+\int\limits_{OB}(3x^2-y)\,dx-(x+2y)\,dy
+=\int_{0}^{8}-(0+2y)\,dy
+=-\bigl(y^2\bigr)_{0}^{8}=-64.
+\]
+
+На отрезке \(BC:\ y=8,\ dy=0,\ 0\le x\le 4\). Поэтому
+\[
+\int\limits_{BC}(3x^2-y)\,dx-(x+2y)\,dy
+=\int_{0}^{4}(3x^2-8)\,dx
+=\bigl(x^3-8x\bigr)_{0}^{4}=64-32=32.
+\]
+
+Следовательно,
+\[
+\int\limits_{OBC}(3x^2-y)\,dx-(x+2y)\,dy=-64+32=-32.
+\]
+
+\medskip
+c) \(L\) — дуга параболы \(y=\dfrac{x^2}{2}\).
+На параболе \(y=\dfrac{x^2}{2}\) имеем \(dy=x\,dx\), причём \(0\le x\le 4\).
+Тогда
+\begin{flalign*}
+\int\limits_{L}(3x^2-y)\,dx-(x+2y)\,dy
+&=\int_{0}^{4}\left(3x^2-\frac{x^2}{2}\right)dx
+-\int_{0}^{4}\left(x+2\cdot\frac{x^2}{2}\right)x\,dx= 
+\end{flalign*}
+\begin{flalign*}
+&=\int_{0}^{4}\left(\frac{5}{2}x^2-(x+x^2)x\right)dx
+=\int_{0}^{4}\left(\frac{3}{2}x^2-x^3\right)dx =\left(\frac{1}{2}x^3-\frac{1}{4}x^4\right)_{0}^{4}
+=32-64=-32. &&
+\end{flalign*}
+
+\medskip
+Так как во всех трёх случаях получился один и тот же результат, проверим,
+является ли выражение под знаком интеграла полным дифференциалом, т.е.
+выполнено ли условие \(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\).
+
+\[
+P(x,y)=3x^2-y,\qquad \frac{\partial P}{\partial y}=-1,\qquad
+Q(x,y)=-(x+2y),\qquad \frac{\partial Q}{\partial x}=-1.
+\]
+
+Условие полного дифференциала выполнено, следовательно, криволинейный интеграл
+не зависит от пути интегрирования (зависит только от начальной и конечной точек).
+
+\textbf{Ответ:}\ \(\displaystyle -32.\)
+
+
+\newpage
+
+\textbf{441--450.} Показать, что выражение \(P(x,y)\,dx+Q(x,y)\,dy\) является
+полным дифференциалом функции \(u(x,y)\). Найти функцию \(u(x,y)\).
+
+\medskip
+\textbf{449.}\ \(\displaystyle \left(2x+\frac{1}{x+y}+\frac{1}{y}\right)dx
++\left(\frac{1}{x+y}-\frac{x}{y^{2}}\right)dy.\)
+
+\medskip
+\textbf{Решение.}
+Проверим, выполняется ли условие полного дифференциала
+\(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\)
+(на области \(y\neq 0,\ x+y\neq 0\)). Имеем:
+\[
+P(x,y)=2x+\frac{1}{x+y}+\frac{1}{y},\qquad
+Q(x,y)=\frac{1}{x+y}-\frac{x}{y^{2}}.
+\]
+
+\[
+\frac{\partial P}{\partial y}
+=\frac{\partial}{\partial y}\left(2x+\frac{1}{x+y}+\frac{1}{y}\right)
+=-\frac{1}{(x+y)^2}-\frac{1}{y^2},
+\qquad
+\frac{\partial Q}{\partial x}
+=\frac{\partial}{\partial x}\left(\frac{1}{x+y}-\frac{x}{y^{2}}\right)
+=-\frac{1}{(x+y)^2}-\frac{1}{y^2}.
+\]
+
+Итак, \(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\),
+следовательно, данное выражение является полным дифференциалом функции \(u(x,y)\).
+
+\medskip
+Найдём \(u(x,y)\). Интегрируем \(P(x,y)\) по \(x\):
+\[
+u(x,y)=\int P(x,y)\,dx
+=\int\left(2x+\frac{1}{x+y}+\frac{1}{y}\right)dx
+=x^2+\ln|x+y|+\frac{x}{y}+C(y).
+\]
+
+Найдём \(\dfrac{\partial u}{\partial y}\) и приравняем к \(Q(x,y)\):
+\[
+\frac{\partial u}{\partial y}
+=\frac{1}{x+y}-\frac{x}{y^2}+C'(y).
+\]
+Но
+\[
+Q(x,y)=\frac{1}{x+y}-\frac{x}{y^2},
+\]
+значит \(C'(y)=0\), то есть \(C(y)=C=\text{const}\).
+
+Следовательно,
+\[
+u(x,y)=x^2+\ln|x+y|+\frac{x}{y}+C.
+\]
+
+\medskip
+Результат вычислений верен, если \(\dfrac{\partial u}{\partial x}=P(x,y)\) и
+\(\dfrac{\partial u}{\partial y}=Q(x,y)\). Сделаем проверку:
+\[
+\frac{\partial}{\partial x}\left(x^2+\ln|x+y|+\frac{x}{y}+C\right)
+=2x+\frac{1}{x+y}+\frac{1}{y},
+\qquad
+\frac{\partial}{\partial y}\left(x^2+\ln|x+y|+\frac{x}{y}+C\right)
+=\frac{1}{x+y}-\frac{x}{y^2}.
+\]
+
+\medskip
+\textbf{Ответ.} \(u(x,y)=x^2+\ln|x+y|+\dfrac{x}{y}+C\).
+
+
+\newpage
+
+\textbf{451--460.} Дано векторное поле \(\vec F=X\vec i+Y\vec j+Z\vec k\) и плоскость
+\((p): Ax+By+Cz+D=0\), которая вместе с координатными осями образует пирамиду \(V\).
+Пусть \(\sigma\) — основание пирамиды, принадлежащее плоскости \((p)\);
+\(\lambda\) — контур, ограничивающий \(\sigma\); \(\vec n\) — нормаль к \(\sigma\),
+направленная вне пирамиды \(V\).
+Требуется вычислить:
+\begin{enumerate}
+\item поток поля \(\vec F\) через поверхность \(\sigma\) в направлении нормали \(\vec n\);
+\item циркуляцию поля \(\vec F\) по замкнутому контуру \(\lambda\) непосредственно и с помощью теоремы Стокса;
+\item поток поля \(\vec F\) через полную поверхность пирамиды \(V\) непосредственно и по формуле Гаусса--Остроградского.
+\end{enumerate}
+
+\medskip
+\textbf{459.}\ \(\vec F=(y-x+z)\,\vec j;\qquad (p):\ 2x-y+2z-2=0.\)
+
+\medskip
+\textbf{Решение.}
+
+Точки пересечения плоскости \((p)\) с осями:
+\[
+A(1;0;0),\qquad B(0;-2;0),\qquad C(0;0;1).
+\]
+Основание \(\sigma\) — треугольник \(ABC\), контур \(\lambda\) — его граница.
+
+% ------------------------------------------------------------
+\medskip
+1) Поток через \(\sigma\).
+Вычисляем поток векторного поля \(\vec F\) через поверхность \(\sigma\) в направлении внешней нормали:
+\[
+\Pi_{1}=\iint\limits_{\sigma}(\vec F\cdot \vec n^{\,0})\,ds,
+\]
+где \(\vec n^{\,0}\) — единичный вектор нормали к плоскости \((p)\), направленный вне пирамиды.
+
+Нормаль к плоскости \(2x-y+2z-2=0\) равна \((2,-1,2)\), поэтому
+\[
+\vec n^{\,0}=\frac{2\vec i-\vec j+2\vec k}{\sqrt{4+1+4}}
+=\frac{2\vec i-\vec j+2\vec k}{3}
+=\left(\frac23,\,-\frac13,\,\frac23\right).
+\]
+
+Представим плоскость в виде \(z=z(x,y)\):
+\[
+2z=2-2x+y,\qquad z=1-x+\frac{y}{2},\qquad
+z'_x=-1,\quad z'_y=\frac12,
+\]
+\[
+ds=\sqrt{1+(z'_x)^2+(z'_y)^2}\,dx\,dy
+=\sqrt{1+1+\frac14}\,dx\,dy=\frac{3}{2}\,dx\,dy.
+\]
+
+Поле \(\vec F=(0,\ y-x+z,\ 0)\), поэтому
+\[
+(\vec F\cdot \vec n^{\,0})
+=0\cdot\frac23+(y-x+z)\!\left(-\frac13\right)+0\cdot\frac23
+=-\frac13\,(y-x+z).
+\]
+На плоскости \((p)\): \(z=1-x+\dfrac{y}{2}\), значит
+\[
+y-x+z=y-x+1-x+\frac{y}{2}=1-2x+\frac{3}{2}y,
+\]
+\[
+(\vec F\cdot \vec n^{\,0})
+=-\frac13\left(1-2x+\frac{3}{2}y\right)
+=-\frac13+\frac{2}{3}x-\frac12\,y.
+\]
+
+Тогда
+\[
+\Pi_1=\iint\limits_{\sigma_{xy}}\left(-\frac13+\frac{2}{3}x-\frac12\,y\right)\frac{3}{2}\,dx\,dy
+=\iint\limits_{\sigma_{xy}}\left(-\frac12+x-\frac34\,y\right)\,dx\,dy.
+\]
+
+Проекция \(\sigma_{xy}\) на плоскость \(xOy\) — треугольник с вершинами
+\((0,0)\), \((1,0)\), \((0,-2)\), т.е.
+\[
+0\le x\le 1,\qquad 2x-2\le y\le 0.
+\]
+Следовательно,
+\begin{flalign*}
+\Pi_1
+&=\int_{0}^{1}\!dx\int_{2x-2}^{0}\left(-\frac12+x-\frac34\,y\right)\,dy =\int_{0}^{1}\left[\left(-\frac12+x\right)y-\frac{3}{8}y^{2}\right]_{y=2x-2}^{\,y=0}\,dx= &&\\[2mm]
+&=\int_{0}^{1}\left(\frac12-\frac12x^{2}\right)\,dx
+=\frac12\left(x-\frac{x^{3}}{3}\right)_{0}^{1}=\frac13. &&
+\end{flalign*}
+
+
+% ------------------------------------------------------------
+\medskip
+2) Циркуляция по \(\lambda\).
+Вычислим циркуляцию по замкнутому контуру \(\lambda\):
+\[
+C=\oint\limits_{\lambda} X\,dx+Y\,dy+Z\,dz=\oint\limits_{\lambda}(y-x+z)\,dy,
+\]
+где обход согласован с внешней нормалью \(\vec n^{\,0}\).
+Контур \(\lambda\) состоит из трёх отрезков \(AC\), \(CB\), \(BA\) (в порядке \(A\to C\to B\to A\)).
+
+На \(AC:\ y=0,\ dy=0\). Поэтому
+\[
+\int\limits_{AC}(y-x+z)\,dy=0.
+\]
+
+На \(CB:\ x=0,\ y=2z-2,\ dy=2dz,\ z:1\to 0\). Тогда
+\[
+\int\limits_{CB}(y-x+z)\,dy=\int_{1}^{0}\bigl((2z-2)+z\bigr)\,2dz
+=\int_{1}^{0}(6z-4)\,dz=1.
+\]
+
+На \(BA:\ z=0,\ y=2x-2,\ dy=2dx,\ x:0\to 1\). Тогда
+\[
+\int\limits_{BA}(y-x+z)\,dy=\int_{0}^{1}\bigl((2x-2)-x\bigr)\,2dx
+=\int_{0}^{1}(2x-4)\,dx=-3.
+\]
+
+Следовательно,
+\[
+C=0+1-3=-2.
+\]
+
+Проверим по теореме Стокса для поверхности \(\sigma\):
+\[
+\oint\limits_{\lambda} X\,dx+Y\,dy+Z\,dz
+=\iint\limits_{\sigma}
+\left[
+\left(\frac{\partial Z}{\partial y}-\frac{\partial Y}{\partial z}\right)\cos\alpha+
+\left(\frac{\partial X}{\partial z}-\frac{\partial Z}{\partial x}\right)\cos\beta+
+\left(\frac{\partial Y}{\partial x}-\frac{\partial X}{\partial y}\right)\cos\gamma
+\right]ds,
+\]
+где \(\cos\alpha,\cos\beta,\cos\gamma\) — направляющие косинусы \(\vec n^{\,0}\):
+\[
+\cos\alpha=\frac23,\qquad \cos\beta=-\frac13,\qquad \cos\gamma=\frac23.
+\]
+У нас \(X=0,\ Y=y-x+z,\ Z=0\), поэтому
+\[
+\frac{\partial Z}{\partial y}-\frac{\partial Y}{\partial z}=0-1=-1,\qquad
+\frac{\partial X}{\partial z}-\frac{\partial Z}{\partial x}=0,\qquad
+\frac{\partial Y}{\partial x}-\frac{\partial X}{\partial y}=-1-0=-1.
+\]
+Тогда подынтегральное выражение:
+\[
+(-1)\cos\alpha+0\cdot\cos\beta+(-1)\cos\gamma
+=-\frac23-\frac23=-\frac{4}{3}.
+\]
+Следовательно,
+\[
+C=\iint\limits_{\sigma}\left(-\frac{4}{3}\right)\,ds
+=\iint\limits_{\sigma_{xy}}\left(-\frac{4}{3}\right)\frac{3}{2}\,dx\,dy
+=\iint\limits_{\sigma_{xy}}(-2)\,dx\,dy
+=-2\cdot S_{\sigma_{xy}}=-2,
+\]
+так как \(S_{\sigma_{xy}}=\dfrac{1\cdot 2}{2}=1\).
+% ------------------------------------------------------------
+\medskip
+3) Поток через полную поверхность пирамиды \(V\).
+Полная поверхность состоит из четырёх граней: \(\sigma=ABC\) и трёх координатных граней
+\(AOC\subset\{y=0\}\), \(AOB\subset\{z=0\}\), \(BOC\subset\{x=0\}\).
+
+\begin{itemize}
+\item Грань \(AOB\) лежит в плоскости \(z=0\), внешняя нормаль \(\vec n^{\,0}=-\vec k\).
+Так как \(\vec F\) не имеет \(k\)-компоненты, то поток через \(AOB\) равен нулю.
+
+\item Грань \(BOC\) лежит в плоскости \(x=0\), внешняя нормаль \(\vec n^{\,0}=-\vec i\).
+Так как \(\vec F\) не имеет \(i\)-компоненты, то поток через \(BOC\) равен нулю.
+
+\item Грань \(AOC\) лежит в плоскости \(y=0\). Поскольку пирамида лежит при \(y\le 0\),
+внешняя нормаль \(\vec n^{\,0}=\vec j\).
+На \(y=0\): \(\vec F\cdot\vec n^{\,0}=y-x+z=-x+z\), а \(ds=dx\,dz\).
+Область на плоскости \(y=0\): \(x\ge 0,\ z\ge 0,\ x+z\le 1\). Тогда
+\[
+\iint\limits_{AOC}(\vec F\cdot\vec n^{\,0})\,ds
+=\int_{0}^{1}\!dx\int_{0}^{\,1-x}(-x+z)\,dz=0.
+\]
+\end{itemize} TTC
+
+Итак, поток через полную поверхность:
+\[
+\Pi=\Pi_1+0+0+0=\frac13.
+\]
+
+Проверим по формуле Гаусса--Остроградского:
+\[
+\Pi=\iiint\limits_{V}\left(\frac{\partial X}{\partial x}+\frac{\partial Y}{\partial y}+\frac{\partial Z}{\partial z}\right)\,dx\,dy\,dz.
+\]
+Здесь \(X=0,\ Y=y-x+z,\ Z=0\), поэтому
+\[
+\frac{\partial X}{\partial x}=0,\qquad \frac{\partial Y}{\partial y}=1,\qquad \frac{\partial Z}{\partial z}=0,
+\]
+\[
+\Pi=\iiint\limits_{V}1\,dx\,dy\,dz=\mathrm{Vol}(V).
+\]
+Объём пирамиды \(OABC\):
+\[
+\mathrm{Vol}(V)=\frac16\,|OA|\cdot|OB|\cdot|OC|=\frac16\cdot 1\cdot 2\cdot 1=\frac13.
+\]
+Совпадает с найденным потоком.
+
+
+
+\textbf{Ответ.}\ 
+\(\displaystyle \Pi_1=\frac13,\quad C=-2,\quad \Pi=\frac13.\)
+
+\newpage
+
+\textbf{461--470.} Проверить, является ли векторное поле
+\(\vec F=X\vec i+Y\vec j+Z\vec k\) потенциальным и соленоидальным.
+В случае потенциальности поля \(\vec F\) найти его потенциал.
+
+\medskip
+\textbf{469.}\ \(\vec F=(4x-7yz)\vec i+(4y-7xz)\vec j+(4z-7xy)\vec k.\)
+
+\medskip
+\underline{\textbf{Решение.}}
+Пусть
+\[
+P(x,y,z)=4x-7yz,\qquad Q(x,y,z)=4y-7xz,\qquad R(x,y,z)=4z-7xy.
+\]
+
+\medskip
+1) Проверка потенциальности.
+Поле потенциально, если \(\operatorname{rot}\vec F=\vec 0\). Имеем:
+\[
+\operatorname{rot}\vec F=
+\begin{vmatrix}
+\vec i & \vec j & \vec k\\
+\frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z}\\
+P & Q & R
+\end{vmatrix}
+=
+\left(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z}\right)\vec i
++\left(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x}\right)\vec j
++\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\vec k.
+\]
+
+Вычислим производные:
+\[
+\frac{\partial R}{\partial y}=\frac{\partial(4z-7xy)}{\partial y}=-7x,\qquad
+\frac{\partial Q}{\partial z}=\frac{\partial(4y-7xz)}{\partial z}=-7x,
+\]
+\[
+\frac{\partial P}{\partial z}=\frac{\partial(4x-7yz)}{\partial z}=-7y,\qquad
+\frac{\partial R}{\partial x}=\frac{\partial(4z-7xy)}{\partial x}=-7y,
+\]
+\[
+\frac{\partial Q}{\partial x}=\frac{\partial(4y-7xz)}{\partial x}=-7z,\qquad
+\frac{\partial P}{\partial y}=\frac{\partial(4x-7yz)}{\partial y}=-7z.
+\]
+
+Следовательно,
+\[
+\operatorname{rot}\vec F=(0-0)\vec i+(0-0)\vec j+(0-0)\vec k=\vec 0,
+\]
+то есть поле \(\vec F\) потенциальное.
+
+\medskip
+2) Проверка соленоидальности.
+Поле соленоидально, если \(\operatorname{div}\vec F=0\). Найдём:
+\[
+\operatorname{div}\vec F=\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}
+=4+4+4=12\ne 0.
+\]
+Значит поле \(\vec F\) не является соленоидальным.
+
+\medskip
+в) Найдём потенциал \(u(x,y,z)\).
+Согласно определению ротора, необходимыми и достаточными условиями
+потенциальности поля являются равенства
+\[
+\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z}=0,\qquad
+\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x}=0,\qquad
+\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=0.
+\]
+Так как эти условия выполнены (см. п. а)), криволинейный интеграл второго рода
+не зависит от пути интегрирования, соединяющего точки \(M_0\) и \(M\).
+Возьмём \(M_0(0,0,0)\), \(M(x,y,z)\). Тогда
+\[
+u(x,y,z)=\int\limits_{M_0M} P\,dx+Q\,dy+R\,dz + C,
+\]
+где
+\[
+P=4x-7yz,\qquad Q=4y-7xz,\qquad R=4z-7xy.
+\]
+
+Выберем путь \(O(0,0,0)\to (x,0,0)\to (x,y,0)\to (x,y,z)\). 
+\[
+u(x,y,z)=\int_{0}^{x}P(t,0,0)\,dt+\int_{0}^{y}Q(x,s,0)\,ds+\int_{0}^{z}R(x,y,r)\,dr+C.
+\]
+
+\[
+P(t,0,0)=4t,\qquad Q(x,s,0)=4s,\qquad R(x,y,r)=4r-7xy.
+\]
+Следовательно,
+\[
+u(x,y,z)=\int_{0}^{x}4t\,dt+\int_{0}^{y}4s\,ds+\int_{0}^{z}(4r-7xy)\,dr+C
+=2x^2+2y^2+2z^2-7xyz+C.
+\]
+
+Проверка:
+\[
+\frac{\partial u}{\partial x}=4x-7yz=P,\qquad
+\frac{\partial u}{\partial y}=4y-7xz=Q,\qquad
+\frac{\partial u}{\partial z}=4z-7xy=R.
+\]
+
+\medskip
+\textbf{Ответ.} Поле потенциальное, не соленоидальное; потенциал
+\(u(x,y,z)=2x^2+2y^2+2z^2-7xyz+C\).
+
+\end{document}
